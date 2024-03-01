@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -10,12 +11,24 @@ use App\Form\EditType;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class AdminController extends AbstractController
 {
     #[Route('/admin', name: 'app_admin')]
-    public function index(UserRepository $userRepository): Response
-    {   $users = $userRepository->findAll();
+    public function index(UserRepository $userRepository,PaginatorInterface $paginator,Request $request ): Response
+    {  
+        //$userRepository = $this->getDoctrine()->getRepository(User::class);
+        $query = $userRepository->createQueryBuilder('u')
+            ->getQuery();
+
+        // Paginate the results
+        $users = $paginator->paginate(
+            $query, // Query to paginate
+            $request->query->getInt('page', 1), // Current page number, default to 1
+            2 // Number of items per page
+        );
+        
         return $this->render('admin/index.html.twig', [
             'users' => $users,
         ]);

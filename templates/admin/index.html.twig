@@ -447,7 +447,12 @@
                 </tr>
             {% endfor %}
         </tbody>
+           <!-- Pagination links -->
+    <div class="pagination">
+        {{ knp_pagination_render(users) }}
+    </div>
     </table>
+   
                     </div>
                     <a class="text-black d-block ps-4 pt-2 pb-2 pb-lg-0 font-13 font-weight-bold" href="#">Show more</a>
                   </div>
